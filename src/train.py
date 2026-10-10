@@ -1,4 +1,4 @@
-"""Step 2: RF + Logistic Regression train, MLflow log, best ko register + alias Challenger."""
+"""RF + Logistic Regression train, MLflow log, best ko register + alias Challenger."""
 import mlflow
 import mlflow.sklearn
 import pandas as pd
@@ -27,7 +27,7 @@ candidates = [
 mlflow.set_experiment(EXPERIMENT)
 best = None
 for name, model, params in candidates:
-    with mlflow.start_run(run_name=name) as run:
+    with mlflow.start_run(run_name=name):
         model.fit(X_train, y_train)
         pred = model.predict(X_test)
         acc = accuracy_score(y_test, pred)
@@ -36,13 +36,13 @@ for name, model, params in candidates:
         mlflow.log_params(params)
         mlflow.log_metric("accuracy", acc)
         mlflow.log_metric("f1", f1)
-        mlflow.sklearn.log_model(model, "model")
+        info = mlflow.sklearn.log_model(model, name="model", serialization_format="cloudpickle")
         print(f"{name}: accuracy={acc:.4f} f1={f1:.4f}")
         if best is None or f1 > best["f1"]:
-            best = {"name": name, "f1": f1, "run_id": run.info.run_id}
+            best = {"name": name, "f1": f1, "uri": info.model_uri}
 
 print("Best model:", best["name"])
-mv = mlflow.register_model(f"runs:/{best['run_id']}/model", MODEL_NAME)
+mv = mlflow.register_model(best["uri"], MODEL_NAME)
 client = MlflowClient()
 client.set_registered_model_alias(MODEL_NAME, "Challenger", mv.version)
 print(f"Registered {MODEL_NAME} version {mv.version} -> alias 'Challenger'")
