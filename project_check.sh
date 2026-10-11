@@ -8,19 +8,19 @@ echo -ne "1. Virtual Environment Status... "
 if [ -d "venv" ]; then
     echo -e "✅ [OK] (venv folder exists)"
 else
-    echo -e "❌ [FAIL] (venv folder missing! Run 'python3 -m venv venv')"
+    echo -e "❌ [FAIL] (venv folder missing!)"
 fi
 
-# 2. MLflow Central Server Verification
+# 2. MLflow Central Server Verification (Fixed full loop IP address)
 echo -ne "2. MLflow Local Logger (Port 5000)... "
 if curl -s http://127.0.0 &>/dev/null || curl -s http://127.0.0 &>/dev/null; then
     echo -e "✅ [ACTIVE]"
 else
-    echo -e "❌ [DOWN] (MLflow server is closed! Run 'mlflow server --host 0.0.0.0 --port 5000')"
+    echo -e "❌ [DOWN] (Run 'mlflow server --host 0.0.0.0 --port 5000 &')"
 fi
 
 # 3. Serving Containers Check
-echo -ne "3. Sandbox Sandbox Serving (Port 5001)... "
+echo -ne "3. Sandbox Serving (Port 5001)... "
 if curl -s http://127.0.0 &>/dev/null; then echo -e "✅ [LIVE]"; else echo -e "⚪ [INACTIVE] (Waiting for Dev run)"; fi
 
 echo -ne "4. Staging Environment Serving (Port 5002)... "
@@ -34,7 +34,7 @@ echo -ne "6. Data Partition Splits Check... "
 if [ -f "data/train.csv" ] && [ -f "data/test.csv" ]; then
     echo -e "✅ [OK] (Dataset splits exist)"
 else
-    echo -e "❌ [FAIL] (Data folder is empty! Run 'python3 src/ingest.py')"
+    echo -e "❌ [FAIL] (Run 'python3 src/ingest.py')"
 fi
 
 # 5. Local Git Synchronization status
