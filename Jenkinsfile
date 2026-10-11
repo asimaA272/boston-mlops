@@ -1,14 +1,16 @@
-@Library('mlops-lib') _
+@Library('hostel-lib') _  // Apne Jenkins mein jo library naam rakha hai wohi use karein
 
 pipeline {
     agent any
     environment {
         MLFLOW_TRACKING_URI = 'http://127.0.0.1:5000'
-        EMAIL_TO            = 'TUMHARA_EMAIL@gmail.com'   // <-- apni email likho
+        EMAIL_TO            = 'sikandar.hayat@is.uol.edu.pk'   // Aapka exact registered email profile
     }
     stages {
         stage('Setup Environment') {
-            steps { setupEnv() }
+            steps { 
+                setupEnv() 
+            }
         }
 
         // ---------- DEV: dev branch par push ----------
@@ -45,12 +47,24 @@ pipeline {
                 stage('Load Challenger-post-test, Register as Champion') {
                     steps { registerModel('Challenger-post-test', 'Champion') }
                 }
-                stage('Model Deploy') { steps { deployModel('Champion', 5003) } }
+                stage('Model Deploy (Champion)') { 
+                    steps { deployModel('Champion', 5003) } 
+                }
+                stage('Model Test (Champion)') { 
+                    steps { testModel('Champion') } 
+                }
+                stage('Promote to Champion Alias') {
+                    steps { setAlias('Champion', 'Champion') }
+                }
             }
         }
     }
+    
     post {
-        success { notifyEmail('SUCCESS') }
-        failure { notifyEmail('FAILED') }
+        always {
+            // Har build status par automatic aapko email notify karega
+            notifyEmail()
+        }
     }
 }
+
