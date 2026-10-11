@@ -36,7 +36,7 @@ for name, model, params in candidates:
         mlflow.log_params(params)
         mlflow.log_metric("accuracy", acc)
         mlflow.log_metric("f1", f1)
-        info = mlflow.sklearn.log_model(model, name="model", serialization_format="cloudpickle")
+        info = mlflow.sklearn.log_model(model, artifact_path="model", serialization_format="cloudpickle")
         print(f"{name}: accuracy={acc:.4f} f1={f1:.4f}")
         if best is None or f1 > best["f1"]:
             best = {"name": name, "f1": f1, "uri": info.model_uri}
