@@ -4,8 +4,6 @@ mlartifacts/
 __pycache__/
 *.pid
 *.log
-data/train.csv
-data/test.csv
 mlflow.db
 *.db
 .deploy_*.pid
