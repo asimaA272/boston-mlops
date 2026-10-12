@@ -4,7 +4,7 @@ pipeline {
     agent any
     environment {
         MLFLOW_TRACKING_URI = 'http://127.0.0.1:5000'
-        EMAIL_TO            = 'sikandar.hayat@is.uol.edu.pk, 70155033@student.uol.edu.pk'
+        EMAIL_TO            = '70155033@student.uol.edu.pk'
     }
     stages {
         stage('Setup Environment') {
